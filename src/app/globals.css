@@ -1,8 +1,14 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-gradient:
+    radial-gradient(80% 80% at 50% -20%, rgb(99 102 241 / 0.2), transparent),
+    linear-gradient(180deg, #ffffff, #f8fafc);
+
+  --card-bg: rgba(255, 255, 255, 0.7);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
 }
 
 @theme inline {
@@ -14,8 +20,14 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-gradient:
+      radial-gradient(80% 80% at 50% -20%, rgb(99 102 241 / 0.35), transparent),
+      linear-gradient(180deg, #020617, #020617);
+
+    --card-bg: rgba(2, 6, 23, 0.7);
+
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
   }
 }
 
