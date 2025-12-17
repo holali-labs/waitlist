@@ -1,13 +1,13 @@
 export const config = {
   product_key: 'ai-resume-review',
-  title: '이력서를 AI가 대신 리뷰해줍니다',
-  description: '지원 전에 합격 확률을 미리 확인하세요',
+  title: 'AI Resume Reviewer',
+  description: '이력서를 AI가 대신 리뷰해줍니다',
   cta: {
     headline: '출시 알림을 받아보세요',
     button_text: '이메일 등록',
   },
   seo: {
-    og_image: '/og.png',
+    og_image: '/opengraph-image',
     site_name: 'AI Resume Review',
     twitter_card: 'summary',
   },
