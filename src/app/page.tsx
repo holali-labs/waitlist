@@ -3,7 +3,7 @@ import { FeatureCard } from '@/app/_components/FeatureCard';
 import { SubscribeForm } from '@/app/_components/SubscribeForm';
 
 export default function Home() {
-  const { title, description, cta, theme, contents } = config;
+  const { title, description, cta, contents } = config;
 
   return (
     <main

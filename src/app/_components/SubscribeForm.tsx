@@ -33,6 +33,7 @@ export function SubscribeForm() {
       setDone(true);
       form.reset();
     } catch (err) {
+      console.error(err);
       setError('잠시 후 다시 시도해주세요');
     } finally {
       setLoading(false);
