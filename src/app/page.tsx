@@ -1,5 +1,6 @@
 import { config } from '@/landing.config';
 import { FeatureCard } from '@/app/_components/FeatureCard';
+import { SubscribeForm } from '@/app/_components/SubscribeForm';
 
 export default function Home() {
   const { title, description, cta, theme, contents } = config;
@@ -22,25 +23,7 @@ export default function Home() {
 
         {/* CTA */}
         <div className="mt-10 flex justify-center">
-          <form className="flex w-full max-w-md gap-2">
-            <input
-              type="email"
-              required
-              placeholder="you@example.com"
-              className="
-                flex-1 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm
-                focus:outline-none focus:ring-2
-                dark:border-slate-700 dark:bg-slate-900
-              "
-            />
-            <button
-              type="submit"
-              className="rounded-lg px-5 py-3 text-sm font-medium text-white transition"
-              style={{ backgroundColor: theme.primary_color }}
-            >
-              {cta.button_text}
-            </button>
-          </form>
+          <SubscribeForm />
         </div>
 
         <p className="mt-4 text-sm opacity-70">{cta.headline}</p>
