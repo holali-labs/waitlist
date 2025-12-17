@@ -1,5 +1,5 @@
-import { config } from '../landing.config';
-import { FeatureCard } from './_components/FeatureCard';
+import { config } from '@/landing.config';
+import { FeatureCard } from '@/app/_components/FeatureCard';
 
 export default function Home() {
   const { title, description, cta, theme, contents } = config;
