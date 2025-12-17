@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL!),
   title: config.title,
   description: config.description,
-
   openGraph: {
     title: config.title,
     description: config.description,
