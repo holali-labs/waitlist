@@ -1,18 +1,20 @@
-// supabase/functions/subscribe/index.ts
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+// Setup type definitions for built-in Supabase Runtime APIs
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const supabase = createClient(
-  Deno.env.get("DB_PROJECT_URL")!,
-  Deno.env.get("DB_PROJECT_SERVICE_ROLE_KEY")!,
-);
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("SITE_URL")!,
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type",
+type Payload = {
+  email: string;
+  product_key: string;
 };
 
-export default async (req: Request) => {
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "content-type",
+};
+
+Deno.serve(async (req: Request) => {
+  // --- CORS preflight ---
   if (req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
@@ -27,17 +29,24 @@ export default async (req: Request) => {
     });
   }
 
-  let body;
+  let payload: Payload;
+
   try {
-    body = await req.json();
+    payload = await req.json();
   } catch {
-    return new Response("Invalid JSON", { status: 400, headers: corsHeaders });
+    return new Response("Invalid JSON", {
+      status: 400,
+      headers: corsHeaders,
+    });
   }
 
-  const { email, product_key } = body;
+  const { email, product_key } = payload;
 
   if (!email || typeof email !== "string" || !email.includes("@")) {
-    return new Response("Invalid email", { status: 400, headers: corsHeaders });
+    return new Response("Invalid email", {
+      status: 400,
+      headers: corsHeaders,
+    });
   }
 
   if (!product_key || typeof product_key !== "string") {
@@ -47,22 +56,67 @@ export default async (req: Request) => {
     });
   }
 
-  const { error } = await supabase.from("waitlist").insert({
-    email,
-    product_key,
-  });
+  const supabaseUrl = Deno.env.get("DB_PROJECT_URL");
+  const serviceRoleKey = Deno.env.get("DB_PROJECT_SERVICE_ROLE_KEY");
 
-  if (error) {
-    return new Response(error.message, { status: 500, headers: corsHeaders });
+  if (!supabaseUrl || !serviceRoleKey) {
+    console.error("Missing Supabase env vars");
+    return new Response("Server misconfigured", {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
 
-  return new Response(
-    JSON.stringify({ ok: true }),
-    {
-      headers: {
-        ...corsHeaders,
-        "Content-Type": "application/json",
-      },
-    },
+  const supabase = createClient(
+    supabaseUrl,
+    serviceRoleKey,
   );
-};
+
+  try {
+    const { error } = await supabase
+      .from("waitlist")
+      .insert({ email, product_key });
+
+    if (error) {
+      // unique constraint (email, product_key) 대응
+      if (error.code === "23505") {
+        return new Response(
+          JSON.stringify({ ok: true }),
+          {
+            headers: {
+              ...corsHeaders,
+              "Content-Type": "application/json",
+            },
+            status: 200,
+          },
+        );
+      }
+
+      throw error;
+    }
+
+    return new Response(
+      JSON.stringify({ ok: true }),
+      {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+        status: 200,
+      },
+    );
+  } catch (err: any) {
+    console.error("Insert failed:", err);
+
+    return new Response(
+      JSON.stringify({ message: err?.message ?? "Internal error" }),
+      {
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+        status: 500,
+      },
+    );
+  }
+});
