@@ -1,5 +1,5 @@
 export const config = {
-  product_key: "writing-budy",
+  product_key: "writing-buddy",
   title: "Writing Buddy",
   description:
     "AI가 글을 대신 쓰지 않고, 필요한 만큼만 개입해 글쓰기를 돕습니다.",
