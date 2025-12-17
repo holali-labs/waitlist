@@ -7,7 +7,7 @@ const supabase = createClient(
 );
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://writing-buddy.holali-log.me",
+  "Access-Control-Allow-Origin": Deno.env.get("SITE_URL")!,
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type",
 };
